@@ -1,0 +1,31 @@
+name: totp
+version: "1.0"
+author: Gergely Brautigam <skarlso777@gmail.com>
+about: TOTP Token generator on the command line with AES encrypted account handling.
+subcommands:
+    - add:
+        about: Adds a new account with a TOTP token.
+        version: "1.0"
+        author: Gergely Brautigam <skarlso777@gmail.com>
+    - generate:
+        about: Generate a new token for a given account.
+        version: "1.0"
+        author: Gergely Brautigam <skarlso777@gmail.com>
+        args:
+          - account:
+              short: a
+              long: account
+              value_name: account
+              help: Generate a TOTP for a given account.
+              takes_value: true
+    - delete:
+        about: Delete a given account.
+        version: "1.0"
+        author: Gergely Brautigam <skarlso777@gmail.com>
+        args:
+          - account:
+              short: a
+              long: account
+              value_name: account
+              help: Generate a TOTP for a given account.
+              takes_value: true
