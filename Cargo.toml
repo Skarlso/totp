@@ -1,0 +1,6 @@
+[package]
+name = "totp"
+version = "0.1.0"
+authors = ["Gergely Brautigam <skarlso777@gmail.com>"]
+
+[dependencies]
