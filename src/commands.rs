@@ -1,12 +1,11 @@
-extern crate clap;
 use std::io;
+use generator;
 
 pub fn add_account() {
     println!("Adding account");
     let mut input = String::new();
     match io::stdin().read_line(&mut input) {
-        Ok(n) => {
-            println!("{} bytes read", n);
+        Ok(_) => {
             println!("{}", input);
         }
         Err(error) => println!("error: {}", error),
@@ -18,5 +17,7 @@ pub fn delete_account(account: &str) {
 }
 
 pub fn generate_token(account: &str) {
-    println!("{:?}", account);
+    // Get the token for the given account here
+    let token = generator::generate_otp_token(String::from("token"));
+    println!("{}", token);
 }

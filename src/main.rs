@@ -1,5 +1,10 @@
 #[macro_use]
 extern crate clap;
+extern crate chrono;
+extern crate data_encoding;
+extern crate crypto;
+extern crate byteorder;
+
 use clap::App;
 
 mod generator;
