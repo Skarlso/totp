@@ -1,14 +1,16 @@
 extern crate clap;
-use std::io::{self, Read};
+use std::io;
 
 pub fn add_account() {
     println!("Adding account");
-    let mut buffer = String::new();
-    let stdin = io::stdin();
-    let mut handle = stdin.lock();
-
-    handle.read_to_string(&mut buffer)?;
-    Ok(())
+    let mut input = String::new();
+    match io::stdin().read_line(&mut input) {
+        Ok(n) => {
+            println!("{} bytes read", n);
+            println!("{}", input);
+        }
+        Err(error) => println!("error: {}", error),
+    }
 }
 
 pub fn delete_account(account: &str) {
