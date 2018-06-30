@@ -18,6 +18,6 @@ pub fn delete_account(account: &str) {
 
 pub fn generate_token(account: &str) {
     // Get the token for the given account here
-    let token = generator::generate_otp_token(String::from("token"));
+    let token = generator::generate_otp_token(String::from("MFZWIZQ="));
     println!("{}", token);
 }
