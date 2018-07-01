@@ -4,6 +4,7 @@ extern crate chrono;
 extern crate data_encoding;
 extern crate crypto;
 extern crate byteorder;
+extern crate openssl;
 
 use clap::App;
 
