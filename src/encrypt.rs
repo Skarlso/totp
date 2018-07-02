@@ -19,9 +19,6 @@
 //         buf
 //     };
 //     println!("iv: {:?}", iv);
-//     // let key = AesKey::new_encrypt(&password[..]);
-//     // let mut output = vec![0u8; cipher.key_len()];
-//     // aes_ige(&, &mut output, &key, &mut iv_as_u8, Mode::Encrypt);
 //     let encrypted_content =
 //         symm::encrypt(cipher,
 //                       &password,
@@ -52,10 +49,10 @@
 //         Err(err) => panic!("unable to decrypt content {}", err),
 //     }
 // }
-use openssl::aes::{AesKey, KeyError, aes_ige};
-use openssl::symm::Mode;
 use hex::{FromHex, ToHex};
+use openssl::aes::{aes_ige, AesKey, KeyError};
 use openssl::symm;
+use openssl::symm::Mode;
 
 pub fn encrypt(content: &str, password: &str) -> Vec<u8> {
     let hex_cipher = symm::Cipher::aes_256_ctr();
@@ -64,10 +61,15 @@ pub fn encrypt(content: &str, password: &str) -> Vec<u8> {
         password.push(b'0');
     }
     let randomness = "000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F";
-    if let (Ok(key_as_u8), Ok(cipher_as_u8), Ok(mut iv_as_u8)) =
-        (Vec::from_hex(password), Vec::from_hex(hex_cipher.as_ptr()), Vec::from_hex(randomness)) {
-            let key = AesKey::new_encrypt(&key_as_u8)?;
-            let mut output = vec![0u8; cipher_as_u8.len()];
-            aes_ige(&cipher_as_u8, &mut output, &key, &mut iv_as_u8, Mode::Encrypt);
-        }
+    let mut iv = Vec::from_hex(randomness).unwrap();
+    let key = AesKey::new_encrypt(&password).unwrap();
+    let mut output = vec![0u8; content.len()];
+    aes_ige(
+        content.to_owned().as_bytes(),
+        &mut output,
+        &key,
+        &mut iv,
+        Mode::Encrypt,
+    );
+    output
 }
