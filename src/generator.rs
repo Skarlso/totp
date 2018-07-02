@@ -4,7 +4,7 @@ use crypto::{hmac::Hmac, sha1::Sha1};
 use crypto::mac::{Mac};
 use byteorder::{ByteOrder, BigEndian};
 
-pub fn generate_otp_token(token: String) -> String {
+pub fn generate_otp_token(token: &str) -> String {
     let now = Local::now().timestamp();
     let timer = (now / 30) as u64;
     let secret_bytes = BASE32.decode(token.as_bytes());
