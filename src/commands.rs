@@ -3,15 +3,19 @@ use generator;
 use accounting;
 
 pub fn add_account() {
-    println!("Adding account");
-    let mut input = String::new();
-    match io::stdin().read_line(&mut input) {
-        Ok(_) => {
-            println!("{}", input);
-        }
+    println!("account: ");
+    let mut account = String::new();
+    match io::stdin().read_line(&mut account) {
+        Ok(_) => (),
         Err(error) => println!("error: {}", error),
     }
-    accounting::save_account(&String::from("test"), &String::from("token"), &String::from("password"));
+    println!("token: ");
+    let mut token = String::new();
+    match io::stdin().read_line(&mut token) {
+        Ok(_) => (),
+        Err(error) => println!("error: {}", error),
+    }
+    accounting::save_account(&account, &token);
 }
 
 pub fn delete_account(account: &str) {

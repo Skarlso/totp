@@ -1,75 +1,39 @@
-// use openssl::rand;
-// use openssl::symm;
-// use openssl::aes::{AesKey, KeyError, aes_ige};
+use openssl::symm::{decrypt, encrypt, Cipher};
+use data_encoding::BASE64;
 
-// pub fn encrypt(content: &String, password: &String) -> (Vec<u8>, Vec<u8>) {
-//     let mut con = String::from("#CHECKME#");
-//     con.push_str("#CHECKME#");
-//     // The password will be used to generate a key
-//     let mut password = password.as_bytes().to_vec();
-//     let cipher = symm::Cipher::aes_256_ctr();
-//     // Zero pedding to aes_256 key length
-//     while password.len() < cipher.key_len() {
-//         password.push(b'0');
-//     }
-//     println!("password: {:?}", password);
-//     let iv = {
-//         let mut buf = vec![0; cipher.iv_len().unwrap()];
-//         rand::rand_bytes(buf.as_mut_slice()).unwrap();
-//         buf
-//     };
-//     println!("iv: {:?}", iv);
-//     let encrypted_content =
-//         symm::encrypt(cipher,
-//                       &password,
-//                       Some(iv.as_slice()),
-//                       content.as_bytes()).unwrap();
+pub fn encrypt_content(content: &str, password: &str) -> String {
+  let cipher = Cipher::aes_256_cbc();
+  let mut password = password.as_bytes().to_vec();
+  while password.len() < cipher.key_len() {
+    password.push(b'0');
+  }
+  let data = content.as_bytes();
+  let key = password.as_slice();
 
-//     (encrypted_content, iv)
-// }
+  let iv = b"\x00\x01\x02\x03\x04\x05\x06\x07\x00\x01\x02\x03\x04\x05\x06\x07";
+  let encrypted_content = encrypt(
+      cipher,
+      key,
+      Some(iv),
+      data).unwrap();
 
-// pub fn decrypt(content: &String, password: &String, iv: &Vec<u8>) -> String {
-//     let cipher = symm::Cipher::aes_256_ctr();
-//     let mut password = password.as_bytes().to_vec();
-//     while password.len() < cipher.key_len() {
-//         password.push(b'0');
-//     }
-//     // let iv = {
-//     //     let mut buf = vec![0; cipher.iv_len().unwrap()];
-//     //     rand::rand_bytes(buf.as_mut_slice()).unwrap();
-//     //     buf
-//     // };
+  BASE64.encode(encrypted_content.as_slice())
+}
 
-//     let decrypted_content = symm::decrypt(cipher, &password, Some(iv.as_slice()), content.as_bytes());
-//     match decrypted_content {
-//         Ok(c) => {
-//             let result = String::from_utf8_lossy(c.as_slice());
-//             result.into_owned()
-//         }
-//         Err(err) => panic!("unable to decrypt content {}", err),
-//     }
-// }
-use hex::{FromHex, ToHex};
-use openssl::aes::{aes_ige, AesKey, KeyError};
-use openssl::symm;
-use openssl::symm::Mode;
-
-pub fn encrypt(content: &str, password: &str) -> Vec<u8> {
-    let hex_cipher = symm::Cipher::aes_256_ctr();
-    let mut password = password.as_bytes().to_vec();
-    while password.len() < hex_cipher.key_len() {
-        password.push(b'0');
-    }
-    let randomness = "000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F";
-    let mut iv = Vec::from_hex(randomness).unwrap();
-    let key = AesKey::new_encrypt(&password).unwrap();
-    let mut output = vec![0u8; content.len()];
-    aes_ige(
-        content.to_owned().as_bytes(),
-        &mut output,
-        &key,
-        &mut iv,
-        Mode::Encrypt,
-    );
-    output
+pub fn decrypt_content(content: &str, password: &str) -> String {
+  let base64_decoded_content = BASE64.decode(content.as_bytes()).unwrap();
+  let cipher = Cipher::aes_256_cbc();
+  let mut password = password.as_bytes().to_vec();
+  while password.len() < cipher.key_len() {
+    password.push(b'0');
+  }
+  let data = base64_decoded_content.as_slice();
+  let key = password.as_slice();
+  let iv = b"\x00\x01\x02\x03\x04\x05\x06\x07\x00\x01\x02\x03\x04\x05\x06\x07";
+  let decrypted_content = decrypt(
+      cipher,
+      key,
+      Some(iv),
+      data).unwrap();
+  String::from_utf8(decrypted_content).unwrap()
 }
