@@ -1,11 +1,12 @@
+use filehandler;
+
 pub fn save_account(acc: &String, token: &String) {
-    println!("password: ");
     // Check if account already exists
     // Add it if not
     // Pass it to file handler to save it
-    let content = format!("{}:{}", acc, token);
-
-
+    let mut accounts = filehandler::load_account_file();
+    accounts.insert(acc.to_owned(), token.to_owned());
+    filehandler::save_account_file(&accounts);
 }
 
 pub fn load_token(acc: &str) -> Option<&str> {

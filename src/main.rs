@@ -6,6 +6,7 @@ extern crate crypto;
 extern crate data_encoding;
 extern crate hex;
 extern crate openssl;
+extern crate rpassword;
 
 use clap::App;
 
