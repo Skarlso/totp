@@ -8,10 +8,10 @@ pub fn save_account(acc: &String, token: &String) {
     fh.save_account_file();
 }
 
-pub fn load_token(acc: &str) -> Option<String> {
+pub fn load_token(acc: &str) -> String {
     let mut fh = FileHandler::init();
     fh.load_account_file();
-    Some(fh.get_token(acc.trim_right().to_owned()))
+    fh.get_token(acc.trim_right().to_owned())
 }
 
 pub fn delete_account(acc: &String) {

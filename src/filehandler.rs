@@ -5,6 +5,7 @@ use std::fs::File;
 use std::fs::OpenOptions;
 use std::io::prelude::Read;
 use std::io::prelude::Write;
+use std::process;
 
 pub struct FileHandler {
     accounts: HashMap<String, String>,
@@ -34,9 +35,10 @@ impl FileHandler {
         let (encrypted_content, iv) = encrypt::encrypt_content(&result[..], &self.password[..]);
         let content = format!("{}:{}\n", encrypted_content, iv);
         let mut file = OpenOptions::new()
+            .create(true)
+            .truncate(true)
             .read(true)
             .write(true)
-            .create(true)
             .open(".account.txt")
             .expect("unable to create or open file.");
         file.write_all(content.as_bytes())
@@ -44,7 +46,10 @@ impl FileHandler {
     }
 
     pub fn load_account_file(&mut self) {
-        let mut file = File::open(".account.txt").expect("could not open account file");
+        let mut file = File::open(".account.txt").unwrap_or_else(|_| {
+            println!("account file not found. please save an account first.");
+            process::exit(1)
+        });
         let mut contents = String::new();
         file.read_to_string(&mut contents)
             .expect("could not read account file");
@@ -67,10 +72,18 @@ impl FileHandler {
     }
 
     pub fn get_token(&self, acc: String) -> String {
+        if !self.accounts.contains_key(&acc) {
+            println!("account {} not found", acc);
+            process::exit(1);
+        }
         self.accounts[&acc].to_owned()
     }
 
     pub fn delete_account(&mut self, acc: String) {
+        if !self.accounts.contains_key(&acc) {
+            println!("account {} not found", acc);
+            process::exit(1);
+        }
         self.accounts.remove(&acc);
     }
 }

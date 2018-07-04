@@ -3,6 +3,7 @@ use chrono::Local;
 use crypto::mac::Mac;
 use crypto::{hmac::Hmac, sha1::Sha1};
 use data_encoding::BASE32;
+use std::process;
 
 pub fn generate_otp_token(token: &str) -> String {
     let now = Local::now().timestamp();
@@ -10,7 +11,10 @@ pub fn generate_otp_token(token: &str) -> String {
     let secret_bytes = BASE32.decode(token.as_bytes());
     let bytes = match secret_bytes {
         Ok(bytes) => bytes,
-        Err(error) => panic!("error occurred while decoding token: {}", error),
+        Err(_) => {
+            println!("token is not a valid base32 data type");
+            process::exit(1);
+        }
     };
     let mut buf = [0; 8];
     let mut hm = Hmac::new(Sha1::new(), &bytes[..]);
