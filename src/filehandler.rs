@@ -3,7 +3,6 @@ use rpassword::prompt_password_stderr;
 use std::collections::HashMap;
 use std::fs::File;
 use std::fs::OpenOptions;
-// use std::io;
 use std::io::prelude::Read;
 use std::io::prelude::Write;
 
@@ -69,5 +68,9 @@ impl FileHandler {
 
     pub fn get_token(&self, acc: String) -> String {
         self.accounts[&acc].to_owned()
+    }
+
+    pub fn delete_account(&mut self, acc: String) {
+        self.accounts.remove(&acc);
     }
 }

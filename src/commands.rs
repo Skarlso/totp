@@ -1,19 +1,24 @@
-use std::io;
-use generator;
 use accounting;
+use generator;
+use std::io;
 
 pub fn add_account() {
     println!("account: ");
     let mut account = String::new();
-    io::stdin().read_line(&mut account).expect("unable to read line");
+    io::stdin()
+        .read_line(&mut account)
+        .expect("unable to read line");
     println!("token: ");
     let mut token = String::new();
-    io::stdin().read_line(&mut token).expect("unable to read line");
+    io::stdin()
+        .read_line(&mut token)
+        .expect("unable to read line");
     accounting::save_account(&account, &token);
 }
 
 pub fn delete_account(account: &str) {
     println!("Deleting account {}", account);
+    accounting::delete_account(&account.to_owned());
 }
 
 pub fn generate_token(account: &str) {

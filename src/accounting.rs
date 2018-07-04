@@ -14,4 +14,10 @@ pub fn load_token(acc: &str) -> Option<String> {
     Some(fh.get_token(acc.trim_right().to_owned()))
 }
 
-pub fn delete_account(acc: &String) {}
+pub fn delete_account(acc: &String) {
+    let mut fh = FileHandler::init();
+    fh.load_account_file();
+    // check if account exists before adding.
+    fh.delete_account(acc.trim_right().to_owned());
+    fh.save_account_file();
+}
