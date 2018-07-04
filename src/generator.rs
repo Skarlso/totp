@@ -1,8 +1,8 @@
-use chrono::{Local};
-use data_encoding::BASE32;
+use byteorder::{BigEndian, ByteOrder};
+use chrono::Local;
+use crypto::mac::Mac;
 use crypto::{hmac::Hmac, sha1::Sha1};
-use crypto::mac::{Mac};
-use byteorder::{ByteOrder, BigEndian};
+use data_encoding::BASE32;
 
 pub fn generate_otp_token(token: &str) -> String {
     let now = Local::now().timestamp();
@@ -24,10 +24,10 @@ pub fn generate_otp_token(token: &str) -> String {
     };
     // let result = result.to_vec();
     let offset = offset as usize;
-    let value = ((((result[offset]) as i32 & 0x7f) << 24) |
-                (((result[offset+1]) as i32 & 0xff) << 16) |
-                (((result[offset+2]) as i32 & 0xff) << 8) |
-                (((result[offset+3]) as i32 & 0xff))) as i64;
+    let value = ((((result[offset]) as i32 & 0x7f) << 24)
+        | (((result[offset + 1]) as i32 & 0xff) << 16)
+        | (((result[offset + 2]) as i32 & 0xff) << 8)
+        | ((result[offset + 3]) as i32 & 0xff)) as i64;
 
     let length = 6;
     let pow10: i64 = 10;

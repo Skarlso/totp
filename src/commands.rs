@@ -5,16 +5,10 @@ use accounting;
 pub fn add_account() {
     println!("account: ");
     let mut account = String::new();
-    match io::stdin().read_line(&mut account) {
-        Ok(_) => (),
-        Err(error) => println!("error: {}", error),
-    }
+    io::stdin().read_line(&mut account).expect("unable to read line");
     println!("token: ");
     let mut token = String::new();
-    match io::stdin().read_line(&mut token) {
-        Ok(_) => (),
-        Err(error) => println!("error: {}", error),
-    }
+    io::stdin().read_line(&mut token).expect("unable to read line");
     accounting::save_account(&account, &token);
 }
 
