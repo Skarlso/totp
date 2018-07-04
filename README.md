@@ -2,11 +2,11 @@
 
 A cli TOTP token generator based on RFC-6238.
 
-# Security
+# Security
 
 This CLI never stores a password. It always asks for one. The password is used to manage multiple accounts and tokens via an AES encrypted account file located next to the binary.
 
-# Commands
+# Commands
 
 ```bash
 ❯ totp help
