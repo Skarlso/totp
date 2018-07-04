@@ -1,16 +1,17 @@
-use filehandler;
+use filehandler::FileHandler;
 
 pub fn save_account(acc: &String, token: &String) {
-    // Check if account already exists
-    // Add it if not
-    // Pass it to file handler to save it
-    let mut accounts = filehandler::load_account_file();
-    accounts.insert(acc.to_owned(), token.to_owned());
-    filehandler::save_account_file(&accounts);
+    let mut fh = FileHandler::init();
+    fh.load_account_file();
+    // check if account exists before adding.
+    fh.add_account(acc.trim_right().to_owned(), token.trim_right().to_owned());
+    fh.save_account_file();
 }
 
-pub fn load_token(acc: &str) -> Option<&str> {
-    Some(acc)
+pub fn load_token(acc: &str) -> Option<String> {
+    let mut fh = FileHandler::init();
+    fh.load_account_file();
+    Some(fh.get_token(acc.trim_right().to_owned()))
 }
 
 pub fn delete_account(acc: &String) {}
