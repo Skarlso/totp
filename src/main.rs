@@ -9,6 +9,7 @@ extern crate openssl;
 extern crate rpassword;
 
 use clap::App;
+use std::error::Error;
 
 mod accounting;
 mod commands;
@@ -16,19 +17,20 @@ mod encrypt;
 mod generator;
 mod filehandler;
 
-fn main() {
+fn main() -> Result<(), Box<Error>> {
     let yaml = load_yaml!("cli.yml");
     let matches = App::from_yaml(yaml).get_matches();
     match matches.subcommand() {
-        ("add", Some(_)) => commands::add_account(),
+        ("add", Some(_)) => commands::add_account()?,
         ("generate", Some(token)) => match token.value_of("account") {
-            Some(acc) => commands::generate_token(acc),
+            Some(acc) => commands::generate_token(acc)?,
             None => println!("Please define an --account to generate a token for"),
         },
         ("delete", Some(token)) => match token.value_of("account") {
-            Some(acc) => commands::delete_account(acc),
+            Some(acc) => commands::delete_account(acc)?,
             None => println!("Please define an --account to delete"),
         },
         _ => {}
     }
+    Ok(())
 }

@@ -5,7 +5,8 @@ use std::fs::File;
 use std::fs::OpenOptions;
 use std::io::prelude::Read;
 use std::io::prelude::Write;
-use std::process;
+use std::error::Error;
+use std::io::{self, ErrorKind};
 
 pub struct FileHandler {
     accounts: HashMap<String, String>,
@@ -45,16 +46,13 @@ impl FileHandler {
             .expect("unable to write to account.txt");
     }
 
-    pub fn load_account_file(&mut self) {
-        let mut file = File::open(".account.txt").unwrap_or_else(|_| {
-            println!("account file not found. please save an account first.");
-            process::exit(1)
-        });
+    pub fn load_account_file(&mut self) -> Result<(), Box<Error>> {
+        let mut file = File::open(".account.txt")?;
         let mut contents = String::new();
         file.read_to_string(&mut contents)
             .expect("could not read account file");
         if contents.len() < 1 {
-            return;
+            return Ok(());
         }
         let split: Vec<&str> = contents.split(":").collect();
         let content = split[0];
@@ -69,21 +67,23 @@ impl FileHandler {
             &self.accounts
                 .insert(acc_split[0].to_owned(), acc_split[1].to_owned());
         }
+        Ok(())
     }
 
-    pub fn get_token(&self, acc: String) -> String {
+    pub fn get_token(&self, acc: String) -> Result<String, Box<Error>> {
         if !self.accounts.contains_key(&acc) {
-            println!("account {} not found", acc);
-            process::exit(1);
+            let s = format!("account {} not found", acc);
+            return Err(io::Error::new(ErrorKind::InvalidInput, s).into());
         }
-        self.accounts[&acc].to_owned()
+        Ok(self.accounts[&acc].to_owned())
     }
 
-    pub fn delete_account(&mut self, acc: String) {
+    pub fn delete_account(&mut self, acc: String) -> Result<(), Box<Error>> {
         if !self.accounts.contains_key(&acc) {
-            println!("account {} not found", acc);
-            process::exit(1);
+            let s = format!("account {} not found", acc);
+            return Err(io::Error::new(ErrorKind::InvalidInput, s).into());
         }
         self.accounts.remove(&acc);
+        Ok(())
     }
 }
