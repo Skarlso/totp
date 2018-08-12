@@ -1,7 +1,6 @@
 use encrypt;
 use rpassword::prompt_password_stderr;
 use std::collections::HashMap;
-use std::fs::File;
 use std::fs::OpenOptions;
 use std::io::prelude::Read;
 use std::io::prelude::Write;
@@ -41,13 +40,19 @@ impl FileHandler {
             .read(true)
             .write(true)
             .open(".account.txt")
-            .expect("unable to create or open file.");
+            .expect("unable to create or open account file.");
         file.write_all(content.as_bytes())
             .expect("unable to write to account.txt");
     }
 
     pub fn load_account_file(&mut self) -> Result<(), Box<Error>> {
-        let mut file = File::open(".account.txt")?;
+        let mut file = OpenOptions::new()
+            .create(true)
+            .read(true)
+            .write(true)
+            .append(true)
+            .open(".account.txt")
+            .expect("unable to create or open account file");
         let mut contents = String::new();
         file.read_to_string(&mut contents)
             .expect("could not read account file");
