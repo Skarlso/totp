@@ -167,4 +167,33 @@ mod tests {
         assert!(Path::new(file_name).exists());
         remove_file(file_name).expect("it's all okay");
     }
+
+    #[test]
+    fn test_delete_account() {
+        let file_name = ".delete_account_test_account.txt";
+        let mut fh = FileHandler{
+            password: String::from("password"),
+            accounts: HashMap::new(),
+            file_name: file_name,
+        };
+        fh.add_account(String::from("account"), String::from("token"));
+        fh.save_account_file();
+        assert!(Path::new(file_name).exists());
+        let res = fh.delete_account(String::from("account"));
+        assert!(res.is_ok());
+    }
+
+    #[test]
+    fn test_delete_account_error_if_account_not_exists() {
+        let file_name = ".delete_error_account_test_account.txt";
+        let mut fh = FileHandler{
+            password: String::from("password"),
+            accounts: HashMap::new(),
+            file_name: file_name,
+        };
+        fh.save_account_file();
+        assert!(Path::new(file_name).exists());
+        let res = fh.delete_account(String::from("account"));
+        assert!(res.is_err());
+    }
 }
