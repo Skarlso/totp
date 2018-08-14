@@ -154,4 +154,17 @@ mod tests {
         assert_eq!(String::from("token"), fh.get_token(String::from("account")).unwrap());
         remove_file(file_name).expect("it's all okay");
     }
+
+    #[test]
+    fn test_load_account_also_creates_empty_test_file() {
+        let file_name = ".create_test_account_file.txt";
+        let mut fh = FileHandler{
+            password: String::from("password"),
+            accounts: HashMap::new(),
+            file_name: file_name,
+        };
+        fh.load_account_file().expect("failed to load in account file");
+        assert!(Path::new(file_name).exists());
+        remove_file(file_name).expect("it's all okay");
+    }
 }
