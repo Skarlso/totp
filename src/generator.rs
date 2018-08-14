@@ -40,3 +40,30 @@ pub fn generate_otp_token(token: &str) -> Result<String, Box<Error>> {
     let modulo = value % pow10.pow(length);
     Ok(format!("{:0length$}", modulo, length = 6))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_generate_token() {
+        let token = "MFZWIZQ=";
+        let otp = generate_otp_token(token);
+        assert_eq!(6, otp.unwrap().len());
+    }
+
+    #[test]
+    fn test_generate_token_is_the_same_when_called_twice_quickly() {
+        let token = "MFZWIZQ=";
+        let otp1 = generate_otp_token(token);
+        let otp2 = generate_otp_token(token);
+        assert_eq!(otp1.unwrap(), otp2.unwrap());
+    }
+
+    #[test]
+    fn test_generate_error_when_giving_non_base32_token() {
+        let token = "asdf";
+        let otp = generate_otp_token(token);
+        assert_eq!(true, otp.is_err());
+    }
+}

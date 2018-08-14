@@ -51,3 +51,19 @@ pub fn decrypt_content(content: &str, password: &str, iv: &str) -> String {
         });
     String::from_utf8(decrypted_content).unwrap()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_encrypt_content() {
+        let content = "asdf";
+        let password = "password";
+        let (encrypted, iv) = encrypt_content(content, password);
+        assert_ne!(encrypted, content);
+        assert!(iv.len() > 0);
+        let decrypted = decrypt_content(encrypted.as_str(), password, iv.as_str());
+        assert_eq!(decrypted, "asdf");
+    }
+}

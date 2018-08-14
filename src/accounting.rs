@@ -25,11 +25,3 @@ pub fn delete_account(acc: &str) -> Result<(), Box<Error>> {
     fh.save_account_file();
     Ok(())
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn test_save_account() {
-    }
-}
