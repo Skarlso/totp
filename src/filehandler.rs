@@ -10,6 +10,7 @@ use std::io::{self, ErrorKind};
 pub struct FileHandler {
     accounts: HashMap<String, String>,
     password: String,
+    file_name: &'static str,
 }
 
 impl FileHandler {
@@ -18,6 +19,7 @@ impl FileHandler {
         FileHandler {
             accounts: HashMap::new(),
             password: password,
+            file_name: ".account.txt",
         }
     }
 
@@ -39,7 +41,7 @@ impl FileHandler {
             .truncate(true)
             .read(true)
             .write(true)
-            .open(".account.txt")
+            .open(&self.file_name)
             .expect("unable to create or open account file.");
         file.write_all(content.as_bytes())
             .expect("unable to write to account.txt");
@@ -51,7 +53,7 @@ impl FileHandler {
             .read(true)
             .write(true)
             .append(true)
-            .open(".account.txt")
+            .open(&self.file_name)
             .expect("unable to create or open account file");
         let mut contents = String::new();
         file.read_to_string(&mut contents)
@@ -90,5 +92,66 @@ impl FileHandler {
         }
         self.accounts.remove(&acc);
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs::remove_file;
+    use std::path::Path;
+
+    #[test]
+    fn test_add_account() {
+        let mut fh = FileHandler{
+            password: String::from("password"),
+            accounts: HashMap::new(),
+            file_name: ".test_account.txt",
+        };
+        fh.add_account(String::from("new_account"), String::from("newtoken"));
+        assert!(fh.accounts.contains_key(&String::from("new_account")));
+        assert_eq!(String::from("newtoken"), fh.get_token(String::from("new_account")).unwrap());
+    }
+
+    #[test]
+    fn test_get_token_fails_if_account_does_not_exist() {
+        let fh = FileHandler{
+            password: String::from("password"),
+            accounts: HashMap::new(),
+            file_name: ".test_account.txt",
+        };
+        let token = fh.get_token(String::from("non_exitant"));
+        assert!(token.is_err());
+    }
+
+    #[test]
+    fn test_save_accountfile() {
+        let file_name = ".save_account_test_account.txt";
+        let mut fh = FileHandler{
+            password: String::from("password"),
+            accounts: HashMap::new(),
+            file_name: file_name,
+        };
+        fh.add_account(String::from("account"), String::from("token"));
+        fh.save_account_file();
+        assert!(Path::new(file_name).exists());
+        remove_file(file_name).expect("it's all okay");
+    }
+
+    #[test]
+    fn test_load_accountfile() {
+        let file_name = ".load_account_test_account.txt";
+        let mut fh = FileHandler{
+            password: String::from("password"),
+            accounts: HashMap::new(),
+            file_name: file_name,
+        };
+        fh.add_account(String::from("account"), String::from("token"));
+        fh.save_account_file();
+        assert!(Path::new(file_name).exists());
+        fh.accounts.remove("account");
+        fh.load_account_file().expect("failed to load in account file");
+        assert_eq!(String::from("token"), fh.get_token(String::from("account")).unwrap());
+        remove_file(file_name).expect("it's all okay");
     }
 }
