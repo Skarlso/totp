@@ -181,6 +181,7 @@ mod tests {
         assert!(Path::new(file_name).exists());
         let res = fh.delete_account(String::from("account"));
         assert!(res.is_ok());
+        remove_file(file_name).expect("it's all okay");
     }
 
     #[test]
@@ -195,5 +196,6 @@ mod tests {
         assert!(Path::new(file_name).exists());
         let res = fh.delete_account(String::from("account"));
         assert!(res.is_err());
+        remove_file(file_name).expect("it's all okay");
     }
 }
