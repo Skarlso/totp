@@ -71,9 +71,10 @@ Then simply press {CTRL,CMD}+C and voila...
 This generator is in full compliance to the RFC described here: RFC-6238.
 Note: With the expection that right now times, and methods are not configurable. That is in the ROADMAP.
 
-# Unit Tests
+# Unit Tests
 
-I know, they are missing. And in the works. I'm still learning Rust.
+~I know, they are missing. And in the works. I'm still learning Rust.~
+Now there are unit tests!
 
 # Contributions
 
