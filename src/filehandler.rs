@@ -14,9 +14,9 @@ pub struct FileHandler {
 }
 
 impl FileHandler {
-    pub fn init() -> FileHandler {
+    pub fn init() -> Self {
         let password = prompt_password_stderr("Password: ").unwrap();
-        FileHandler {
+        Self {
             accounts: HashMap::new(),
             password: password,
             file_name: ".account.txt",
