@@ -7,13 +7,13 @@ use std::io::prelude::Write;
 use std::error::Error;
 use std::io::{self, ErrorKind};
 
-pub struct FileHandler {
+pub struct FileHandler<'a> {
     accounts: HashMap<String, String>,
     password: String,
-    file_name: &'static str,
+    file_name: &'a str,
 }
 
-impl FileHandler {
+impl<'a> FileHandler<'a> {
     pub fn init() -> Self {
         let password = prompt_password_stderr("Password: ").unwrap();
         Self {
