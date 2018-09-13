@@ -12,9 +12,9 @@ categories = ["command-line-interface"]
 license = "MIT"
 license-file = "LICENSE"
 [badges]
-travis-ci = { repository = "https://github.com/Skarlso/totp", branch = "master" }
-is-it-maintained-issue-resolution = { repository = "https://github.com/Skarlso/totp" }
-is-it-maintained-open-issues = { repository = "https://github.com/Skarlso/totp" }
+travis-ci = { repository = "Skarlso/totp", branch = "master" }
+is-it-maintained-issue-resolution = { repository = "Skarlso/totp" }
+is-it-maintained-open-issues = { repository = "Skarlso/totp" }
 maintenance = { status = "actively-developed" }
 
 [dependencies]
