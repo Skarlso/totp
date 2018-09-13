@@ -1,6 +1,6 @@
 [package]
 name = "gotp"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Gergely Brautigam <skarlso777@gmail.com>"]
 description = "Generate totp codes for various accounts which are saved and AES encrypted."
 documentation = "https://github.com/Skarlso/totp/blob/master/README.md"
