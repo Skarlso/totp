@@ -1,6 +1,7 @@
 # TOTP CLI
 
 A cli TOTP token generator based on RFC-6238.
+[![Build Status](https://travis-ci.org/Skarlso/totp.svg?branch=master)](https://travis-ci.org/Skarlso/totp)
 
 # Security
 
