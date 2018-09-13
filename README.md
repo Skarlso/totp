@@ -66,6 +66,26 @@ Then simply press {CTRL,CMD}+C and voila...
 452987
 ```
 
+If you are like me and have many tokens for many accounts, it's tedious to constantly enter the account names.
+
+But that's what aliases are for.
+
+Save this into your bash.rc or zshrc or whatever, which will create aliases like `gg` and `wgg` for short-codes.
+
+```bash
+gotp-generate() {
+    gotp generate -a $1
+}
+
+gg() {
+    gotp-generate personal.gmail
+}
+
+wgg() {
+    gotp-generate work.gmail
+}
+```
+
 # Compliance to RFC
 
 This generator is in full compliance to the RFC described here: RFC-6238.

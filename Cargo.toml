@@ -1,7 +1,21 @@
 [package]
-name = "totp"
+name = "gotp"
 version = "0.1.0"
 authors = ["Gergely Brautigam <skarlso777@gmail.com>"]
+description = "Generate totp codes for various accounts which are saved and AES encrypted."
+documentation = "https://github.com/Skarlso/totp/blob/master/README.md"
+homepage = "https://github.com/Skarlso/totp"
+repository = "https://github.com/Skarlso/totp"
+readme = "README.md"
+keywords = ["totp", "otp", "aes", "account"]
+categories = ["command-line-interface"]
+license = "MIT"
+license-file = "LICENSE"
+[badges]
+travis-ci = { repository = "https://github.com/Skarlso/totp", branch = "master" }
+is-it-maintained-issue-resolution = { repository = "https://github.com/Skarlso/totp" }
+is-it-maintained-open-issues = { repository = "https://github.com/Skarlso/totp" }
+maintenance = { status = "actively-developed" }
 
 [dependencies]
 clap = {version = "2.31", features = ["yaml"]}
