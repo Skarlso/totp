@@ -56,4 +56,32 @@ mod tests {
             Err(_) => panic!("was not excepting an error here"),
         }
     }
+
+    #[test]
+    fn test_encrypt_content_bad_password() {
+        let content = "asdf";
+        let password = "password";
+        let (encrypted, iv) = encrypt_content(content, password).unwrap();
+        assert_ne!(encrypted, content);
+        assert!(iv.len() > 0);
+        let decrypted = decrypt_content(encrypted.as_str(), "a", iv.as_str());
+        match decrypted {
+            Ok(_) => panic!("this should have failed."),
+            Err(_) => (),
+        }
+    }
+
+    #[test]
+    fn test_encrypt_content_bad_base32_data() {
+        let content = "asdf";
+        let password = "password";
+        let (encrypted, iv) = encrypt_content(content, password).unwrap();
+        assert_ne!(encrypted, content);
+        assert!(iv.len() > 0);
+        let decrypted = decrypt_content(encrypted.as_str(), password, "not_a_token");
+        match decrypted {
+            Ok(_) => panic!("this should have failed."),
+            Err(_) => (),
+        }
+    }
 }
