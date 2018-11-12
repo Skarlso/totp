@@ -9,7 +9,6 @@ repository = "https://github.com/Skarlso/totp"
 readme = "README.md"
 keywords = ["totp", "otp", "aes", "account"]
 categories = ["command-line-interface"]
-license = "MIT"
 license-file = "LICENSE"
 [badges]
 travis-ci = { repository = "Skarlso/totp", branch = "master" }
