@@ -9,6 +9,8 @@ pub fn encrypt_content(content: &str, password: &str) -> Result<(String, String)
     while password.len() < cipher.key_len() {
         password.push(b'0');
     }
+
+    let content = content.to_owned() + "\nGOTP:DECRYPT_SUCCESS";
     let data = content.as_bytes();
     let key = password.as_slice();
 
