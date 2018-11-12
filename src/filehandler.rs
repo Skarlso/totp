@@ -72,6 +72,9 @@ impl<'a> FileHandler<'a> {
                 continue;
             }
             let acc_split: Vec<&str> = acc.split(":").collect();
+            if acc_split[0] == encrypt::GOTP_KEY {
+                continue;
+            }
             &self
                 .accounts
                 .insert(acc_split[0].to_owned(), acc_split[1].to_owned());

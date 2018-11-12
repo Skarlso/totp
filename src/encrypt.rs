@@ -2,6 +2,10 @@ use data_encoding::BASE64;
 use openssl::rand;
 use openssl::symm::{decrypt, encrypt, Cipher};
 use std::error::Error;
+use std::io::{self, ErrorKind};
+
+pub const GOTP_KEY: &str = "GOTP";
+pub const GOTP_VALUE: &str = "DECRYPT_SUCCESS";
 
 pub fn encrypt_content(content: &str, password: &str) -> Result<(String, String), Box<Error>> {
     let cipher = Cipher::aes_256_cbc();
@@ -10,7 +14,7 @@ pub fn encrypt_content(content: &str, password: &str) -> Result<(String, String)
         password.push(b'0');
     }
 
-    let content = content.to_owned() + "\nGOTP:DECRYPT_SUCCESS";
+    let content = content.to_owned() + format!("\n{}:{}", GOTP_KEY, GOTP_VALUE).as_str();
     let data = content.as_bytes();
     let key = password.as_slice();
 
@@ -37,8 +41,16 @@ pub fn decrypt_content(content: &str, password: &str, iv: &str) -> Result<String
     }
     let data = base64_decoded_content.as_slice();
     let key = password.as_slice();
-    let decrypted_content = decrypt(cipher, key, Some(iv_decoded.as_slice()), data)?;
-    Ok(String::from_utf8(decrypted_content).unwrap())
+    let decrypted_content = decrypt(cipher, key, Some(iv_decoded.as_slice()), data);
+    let decrypted_content = match decrypted_content {
+        Ok(s) => s,
+        Err(_) => return Err(io::Error::new(ErrorKind::InvalidInput, "Invalid password.").into()),
+    };
+    let decrypted_content = String::from_utf8(decrypted_content).unwrap();
+    if !decrypted_content.contains(format!("\n{}:{}", GOTP_KEY, GOTP_VALUE).as_str()) {
+        return Err(io::Error::new(ErrorKind::InvalidInput, "Invalid password.").into());
+    }
+    Ok(decrypted_content)
 }
 
 #[cfg(test)]
@@ -54,7 +66,7 @@ mod tests {
         assert!(iv.len() > 0);
         let decrypted = decrypt_content(encrypted.as_str(), password, iv.as_str());
         match decrypted {
-            Ok(v) => assert_eq!(v, "asdf"),
+            Ok(v) => assert_eq!(v, "asdf\nGOTP:DECRYPT_SUCCESS"),
             Err(_) => panic!("was not excepting an error here"),
         }
     }
